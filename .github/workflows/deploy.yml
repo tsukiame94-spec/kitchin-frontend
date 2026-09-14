@@ -4,11 +4,19 @@ on:
   push:
     branches: [ main ]
 
+# GitHub Pagesへのデプロイに必要な権限を設定
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
+# 同時デプロイの競合を防ぐ設定
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -20,13 +28,30 @@ jobs:
           node-version: 22
 
       - name: Install dependencies
-        run: npm install
-
-      - name: Build
-        run: npm run build
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: actions/setup-node/npm-install@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          # package-lock.jsonがある場合は自動検出されますが、npm installをそのまま走らせる形でもOKです
+          
+      - name: Install and Build
+        run: |
+          npm install
+          npm run build
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist'
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions-js/deploy-pages@v4 # または actions/deploy-pages@v4
