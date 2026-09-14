@@ -1,0 +1,260 @@
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&display=swap');
+
+body {
+  margin: 0;
+  background-color: #fdfbf7;
+  font-family: "M PLUS Rounded 1c", Arial, sans-serif;
+  font-weight: 500;
+  color: #333;
+  -webkit-text-size-adjust: 100%;
+}
+
+.app-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px 12px; /* スマホで端が詰まりすぎないよう調整 */
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.app-title {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-size: 20px; /* スマホで見やすい少し小さめのサイズ */
+  font-weight: 700;
+}
+
+/* タブボタン（スマホ対応,画面が狭いときは折り返す） */
+.tab-container {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 25px;
+  flex-wrap: wrap; /* スマホでボタンがはみ出さないように改行 */
+}
+
+.tab-button {
+  flex: 1;
+  min-width: 100px; /* 最小幅を設定 */
+  padding: 12px 6px;
+  font-size: 13px; /* スマホでも文字が収まりやすいサイズ */
+  cursor: pointer;
+  background-color: #fff;
+  color: #555;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.tab-button.shopping-active {
+  background-color: #ff7f50;
+  color: #fff;
+  border: none;
+}
+
+.tab-button.cooking-active {
+  background-color: #27ae60;
+  color: #fff;
+  border: none;
+}
+
+.tab-button.history-active {
+  background-color: #8e44ad;
+  color: #fff;
+  border: none;
+}
+
+/* フォーム共通 */
+.input-form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.text-input {
+  flex: 1;
+  padding: 12px;
+  font-size: 15px; 
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  outline: none;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+.submit-btn {
+  padding: 12px 18px;
+  font-size: 15px;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.submit-btn.orange {
+  background-color: #ff7f50;
+}
+
+.submit-btn.green {
+  background-color: #27ae60;
+}
+
+/* グリッドレイアウト */
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr; /* スマホでは基本1列に縦並び */
+  gap: 20px;
+}
+
+/* パソコンなどの少し広い画面のときは2列にする */
+@media (min-width: 600px) {
+  .grid-container {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+  .app-title {
+    font-size: 24px;
+  }
+  .tab-button {
+    font-size: 14px;
+    padding: 14px 8px;
+  }
+}
+
+.stack-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* カード共通 */
+.card {
+  background: #fff;
+  padding: 16px; /* スマホに合わせて少しパディングをスッキリ */
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.card.border-orange { border-top: 4px solid #ff7f50; }
+.card.border-blue { border-top: 4px solid #3498db; }
+.card.border-green { border-top: 4px solid #27ae60; }
+.card.border-yellow { border-top: 4px solid #e67e22; }
+.card.border-purple { border-top: 4px solid #8e44ad; }
+
+.card-title {
+  margin-top: 0;
+  color: #333;
+  font-size: 17px;
+}
+
+/* リスト共通 */
+.item-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.item-row {
+  padding: 12px 0; /* タップしやすいように少し高さを確保 */
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.item-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  word-break: break-all;
+}
+
+.checkbox-style {
+  width: 22px;
+  height: 22px; /* スマホでもチェックしやすく少し大きく */
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.empty-text {
+  color: #aaa;
+  text-align: center;
+  padding: 20px 0;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* ボタン・ラベル類 */
+.action-btn {
+  padding: 6px 10px;
+  font-size: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.action-btn.yellow {
+  background-color: #f1c40f;
+  color: #fff;
+  border: none;
+}
+
+.action-btn.gray {
+  background-color: #f8f9fa;
+  color: #666;
+  border: 1px solid #ddd;
+}
+
+.action-btn.red {
+  background-color: #e74c3c;
+  color: #fff;
+  border: none;
+}
+
+.input-group {
+  margin-bottom: 12px;
+}
+
+.input-label {
+  font-size: 13px;
+  color: #666;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.date-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.history-row {
+  padding: 12px 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.history-date {
+  color: #7f8c8d;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.history-text {
+  color: #2c3e50;
+  font-weight: 500;
+  text-align: right;
+  word-break: break-all;
+}
