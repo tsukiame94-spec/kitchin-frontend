@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 
 function App() {
-  //  認証状態の管理（localStorageからログイン状態を復元）
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     return localStorage.getItem('isLoggedIn') === 'true';
   });
@@ -36,11 +35,10 @@ function App() {
   const [date, setDate] = useState(getToday);
   const [menuText, setMenuText] = useState('');
 
-  //  ログイン処理
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('https://kitchin-backend.onrender.com](https://kitchin-backend.onrender.com', {
+      const response = await fetch('https://kitchin-backend.onrender.com/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: usernameInput, password: passwordInput }),
@@ -62,10 +60,9 @@ function App() {
     }
   };
 
-  //  ログアウト処理
   const handleLogout = async () => {
     try {
-      await fetch('http://localhost:8080/api/logout', {
+      await fetch('https://kitchin-backend.onrender.com/api/logout', {
         method: 'POST',
         credentials: 'include',
       });
@@ -79,15 +76,11 @@ function App() {
 
   const fetchFoods = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/foods', {
+      const response = await fetch('https://kitchin-backend.onrender.com/api/foods', {
         credentials: 'include',
       });
       if (!response.ok) throw new Error('データの取得に失敗しました');
       const data = await response.json();
-      
-      // 🔍 デバッグ用：サーバーからどんなデータが届いているかF12のコンソールに表示します
-      console.log('サーバーから取得した食材データ:', data);
-
       setFoods(data);
     } catch (error) {
       console.error(error);
@@ -97,7 +90,7 @@ function App() {
 
   const fetchMenus = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/menus', {
+      const response = await fetch('https://kitchin-backend.onrender.com/api/menus', {
         credentials: 'include',
       });
       if (!response.ok) throw new Error('献立履歴の取得に失敗しました');
@@ -123,7 +116,7 @@ function App() {
     }
 
     try {
-      const response = await fetch('http://localhost:8080/api/foods', {
+      const response = await fetch('https://kitchin-backend.onrender.com/api/foods', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: name, checked: false, usedToday: false }),
@@ -138,13 +131,13 @@ function App() {
       }
     } catch (error) {
       console.error(error);
-      showMessage('食材の追加に失敗しました（通信エラー）', true);
+      showMessage('食材の追加に失敗しました', true);
     }
   };
 
   const toggleFood = async (food) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/foods/${food.id}`, {
+      const response = await fetch(`https://kitchin-backend.onrender.com/api/foods/${food.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -156,18 +149,15 @@ function App() {
       });
       if (response.ok) {
         fetchFoods();
-      } else {
-        throw new Error('更新失敗');
       }
     } catch (error) {
       console.error(error);
-      showMessage('ステータスの更新に失敗しました', true);
     }
   };
 
   const toggleUsedToday = async (food) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/foods/${food.id}`, {
+      const response = await fetch(`https://kitchin-backend.onrender.com/api/foods/${food.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -179,30 +169,24 @@ function App() {
       });
       if (response.ok) {
         fetchFoods();
-      } else {
-        throw new Error('更新失敗');
       }
     } catch (error) {
       console.error(error);
-      showMessage('今日使うものの更新に失敗しました', true);
     }
   };
 
   const deleteFood = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/foods/${id}`, {
+      const response = await fetch(`https://kitchin-backend.onrender.com/api/foods/${id}`, {
         method: 'DELETE',
         credentials: 'include',
       });
       if (response.ok) {
         fetchFoods();
         showMessage('食材を削除しました');
-      } else {
-        throw new Error('削除失敗');
       }
     } catch (error) {
       console.error(error);
-      showMessage('食材の削除に失敗しました', true);
     }
   };
 
@@ -214,7 +198,7 @@ function App() {
     }
 
     try {
-      const response = await fetch('http://localhost:8080/api/menus', {
+      const response = await fetch('https://kitchin-backend.onrender.com/api/menus', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ date, menuText }),
@@ -224,12 +208,9 @@ function App() {
         setMenuText('');
         fetchMenus();
         showMessage('今日の献立を保存しました！');
-      } else {
-        throw new Error('保存失敗');
       }
     } catch (error) {
       console.error(error);
-      showMessage('献立の保存に失敗しました（通信エラー）', true);
     }
   };
 
@@ -245,7 +226,6 @@ function App() {
     return acc;
   }, {});
 
-  //  未ログイン時の表示（ログイン画面）
   if (!isLoggedIn) {
     return (
       <div className="app-container" style={{ maxWidth: '400px', marginTop: '100px' }}>
@@ -303,11 +283,10 @@ function App() {
     );
   }
 
-  //  ログイン済みのメイン画面
   return (
     <div className="app-container">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-        <h2 className="app-title" style={{ margin: 0 }}> KitchIN</h2>
+        <h2 className="app-title" style={{ margin: 0 }}>🏡 KitchIN</h2>
         <button onClick={handleLogout} className="action-btn red" style={{ padding: '8px 15px' }}>
           🚪 ログアウト
         </button>
@@ -329,7 +308,6 @@ function App() {
         </div>
       )}
 
-      {/* 3つのタブ切り替えボタン */}
       <div className="tab-container">
         <button
           onClick={() => setActiveTab('shopping')}
@@ -351,7 +329,6 @@ function App() {
         </button>
       </div>
 
-      {/* タブ1：お買い物・冷蔵庫画面 */}
       {activeTab === 'shopping' && (
         <div>
           <form onSubmit={addFood} className="input-form">
@@ -366,7 +343,6 @@ function App() {
           </form>
 
           <div className="grid-container">
-            {/* 🛒 買い物リスト */}
             <div className="card border-orange">
               <h3 className="card-title">🛒 買い物リスト</h3>
               <ul className="item-list">
@@ -382,14 +358,9 @@ function App() {
                           onChange={() => toggleFood(food)}
                           className="checkbox-style"
                         />
-                        <span style={{ wordBreak: 'break-all' }}>
-                          {food.name || food.foodName || food.item || food.text || JSON.stringify(food)}
-                        </span>
+                        <span style={{ wordBreak: 'break-all' }}>{food.name}</span>
                       </div>
-                      <button
-                        onClick={() => deleteFood(food.id)}
-                        className="action-btn red"
-                      >
+                      <button onClick={() => deleteFood(food.id)} className="action-btn red">
                         🗑️ 削除
                       </button>
                     </li>
@@ -398,7 +369,6 @@ function App() {
               </ul>
             </div>
 
-            {/* ❄️ 冷蔵庫リスト */}
             <div className="card border-blue">
               <h3 className="card-title">❄️ 冷蔵庫の中身</h3>
               <ul className="item-list">
@@ -414,9 +384,7 @@ function App() {
                           onChange={() => toggleFood(food)}
                           className="checkbox-style"
                         />
-                        <span style={{ wordBreak: 'break-all' }}>
-                          {food.name || food.foodName || food.item || food.text || JSON.stringify(food)}
-                        </span>
+                        <span style={{ wordBreak: 'break-all' }}>{food.name}</span>
                       </div>
                       <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
                         <button
@@ -425,10 +393,7 @@ function App() {
                         >
                           {food.usedToday ? '⭐ 今日使う' : '＋ 今日使う'}
                         </button>
-                        <button
-                          onClick={() => deleteFood(food.id)}
-                          className="action-btn red"
-                        >
+                        <button onClick={() => deleteFood(food.id)} className="action-btn red">
                           🗑️
                         </button>
                       </div>
@@ -441,11 +406,8 @@ function App() {
         </div>
       )}
 
-      {/* タブ2：今日の献立画面 */}
       {activeTab === 'cooking' && (
         <div className="stack-container">
-          
-          {/* 🍳 献立登録 */}
           <div className="card border-green">
             <h3 className="card-title">🍳 献立の登録</h3>
             <form onSubmit={handleMenuSubmit}>
@@ -475,7 +437,6 @@ function App() {
             </form>
           </div>
 
-          {/* 🥕 今日使う食材 */}
           <div className="card border-yellow">
             <h3 className="card-title">🥕 今日使う食材（冷蔵庫から選択中）</h3>
             <ul className="item-list">
@@ -484,13 +445,8 @@ function App() {
               ) : (
                 todayItems.map((item) => (
                   <li key={item.id} className="item-row">
-                    <span style={{ fontWeight: 'bold', color: '#d35400', wordBreak: 'break-all' }}>
-                      {item.name || item.foodName || item.item || item.text || JSON.stringify(item)}
-                    </span>
-                    <button
-                      onClick={() => toggleUsedToday(item)}
-                      className="action-btn red"
-                    >
+                    <span style={{ fontWeight: 'bold', color: '#d35400', wordBreak: 'break-all' }}>{item.name}</span>
+                    <button onClick={() => toggleUsedToday(item)} className="action-btn red">
                       ❌ 解除
                     </button>
                   </li>
@@ -498,14 +454,11 @@ function App() {
               )}
             </ul>
           </div>
-
         </div>
       )}
 
-      {/* タブ3：献立履歴画面 */}
       {activeTab === 'history' && (
         <div className="stack-container">
-          {/* 📜 過去の献立履歴 */}
           <div className="card border-purple">
             <h3 className="card-title">📜 過去の献立履歴</h3>
             <ul className="item-list">
