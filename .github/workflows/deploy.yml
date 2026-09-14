@@ -4,13 +4,11 @@ on:
   push:
     branches: [ main ]
 
-# GitHub Pagesへのデプロイに必要な権限を設定
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# 同時デプロイの競合を防ぐ設定
 concurrency:
   group: "pages"
   cancel-in-progress: false
@@ -27,18 +25,10 @@ jobs:
         with:
           node-version: 22
 
-      - name: Install dependencies
-        uses: actions/setup-node/npm-install@v4
-        with:
-          # package-lock.jsonがある場合は自動検出されますが、npm installをそのまま走らせる形でもOKです
-          
       - name: Install and Build
         run: |
           npm install
           npm run build
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -54,4 +44,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions-js/deploy-pages@v4 # または actions/deploy-pages@v4
+        uses: actions/deploy-pages@v4
